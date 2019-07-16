@@ -1,6 +1,7 @@
 from .Driver import Driver
 from queue import Queue
 import time
+from selenium.common.exceptions import *
 
 
 class Bot(Driver):
@@ -33,10 +34,21 @@ class Bot(Driver):
             print(links_list)
             for x in links_list:
                 self.links.put(x)
-            next_page = self.browser.find_element_by_xpath(
+            try:
+                next_page = self.browser.find_element_by_xpath(
                 '//li[contains(@class, "list-item--active")]/following::li[1]')
+            except NoSuchElementException:
+                break
             next_page.click()
             time.sleep(2)
+
+
+
+    def open_links(self):
+        while not self.links.empty():
+            link = self.links.get()
+            self.browser.get(link)
+
 
     def find_attrs(self):
         while not self.links.empty():
