@@ -4,6 +4,8 @@ import time
 from selenium.common.exceptions import *
 from selenium import webdriver
 import os
+from selenium.common import exceptions
+
 
 
 class Bot(Driver):
@@ -19,6 +21,7 @@ class Bot(Driver):
             url = args[0]
         self.browser.get(url)
         self.browser.maximize_window()
+        return self.browser
 
     def end(self):
         self.browser.close()
@@ -26,36 +29,55 @@ class Bot(Driver):
         print('закрыли браузер')
 
     def find_links(self):
+        self.start()
         links_list = []
         while True:
-            links = self.browser.find_elements_by_xpath(
-                '//div[contains(@class,"main-container")]//a[contains(@href,"sale/flat")]')
+            try:
+                links = self.browser.find_elements_by_xpath(
+                    '//div[contains(@class,"main-container")]//a[contains(@href,"sale/flat")]')
+            except NoSuchElementException as e:
+                print(e)
+                break
             for link in links:
                 link = link.get_attribute('href')
                 if link not in links_list:
                     links_list.append(link)
+                    self.links.put(link)
             try:
-                next_page = self.browser.find_element_by_xpath(
-                    '//li[contains(@class, "list-item--active")]/following::li[1]')
+                next_page = self.browser.find_element_by_xpath('//li[contains(@class, "list-item--active")]/following::li[1]')
                 next_page.click()
-            except NoSuchElementException:
+            except Exception as e:
+                print(e)
                 break
-            time.sleep(2)
 
-        for link in links_list[:10]:
-            self.links.put(link)
-        return self.links
+        return True
 
-    def open_links(self, link):
+    def open_links(self):
         print('start!')
-        try:
-            self.start(link)
-            self.browser.maximize_window()
-        except Exception as e:
-            print(e)
-            self.browser.close()
+        while not self.links.empty():
+            try:
+                link = self.links.get()
+                self.start(link)
+                self.browser.maximize_window()
+            except Exception as e:
+                print(e)
+                self.browser.close()
 
     def find_attrs(self,):
         next_page = self.browser.find_element_by_xpath(
             '//li[contains(@class, "list-item--active")]/following::li[1]')
         pass
+
+    def returner(self, counter=-1):
+        print(counter)
+        try:
+            if counter == -1:
+                counter = 10
+            while counter > 0:
+                counter -= 1
+                time.sleep(1)
+                return self.links, self.returner(counter)
+        except Exception as e:
+            print(e)
+            pass
+
