@@ -2,17 +2,17 @@ from .Driver import Driver
 from queue import Queue
 import time
 from selenium.common.exceptions import *
+from selenium import webdriver
+import os
 
 
 class Bot(Driver):
 
     def __init__(self):
+        super().__init__()
         self.links = Queue()
 
     def start(self, *args):
-        super().__init__()
-        if self.browser is None:
-            Driver.__init__()
         if not args:
             url = self.base_url
         else:
@@ -21,10 +21,8 @@ class Bot(Driver):
         self.browser.maximize_window()
 
     def end(self):
-        if not self.browser:
-            pass
         self.browser.close()
-        self.browser = None
+
         print('закрыли браузер')
 
     def find_links(self):
@@ -43,14 +41,21 @@ class Bot(Driver):
             except NoSuchElementException:
                 break
             time.sleep(2)
-        return links_list
+
+        for link in links_list[:10]:
+            self.links.put(link)
+        return self.links
 
     def open_links(self, link):
-        self.start(link)
-        self.browser.maximize_window()
-        time.sleep(1)
-        self.browser.close()
+        print('start!')
+        try:
+            self.start(link)
+            self.browser.maximize_window()
+        except Exception as e:
+            print(e)
+            self.browser.close()
 
-    def find_attrs(self):
-        while not self.links.empty():
-            link = self.links.get()
+    def find_attrs(self,):
+        next_page = self.browser.find_element_by_xpath(
+            '//li[contains(@class, "list-item--active")]/following::li[1]')
+        pass

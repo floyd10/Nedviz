@@ -3,7 +3,6 @@ from selenium import webdriver
 
 
 class Driver:
-
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__package__))
         self.chromedriver = os.path.join(self.base_dir, "chromedriver.exe")
