@@ -31,6 +31,9 @@ def link_collector():
 
 if __name__ == '__main__':
 
+    links = link_collector()
+
+
 
 
     futures = []
