@@ -9,5 +9,6 @@ class Driver:
         self.options = webdriver.ChromeOptions()
         #self.options.add_argument('headless')
         self.browser = webdriver.Chrome(executable_path=self.chromedriver, options=self.options)
+        self.browser2 = webdriver.Chrome(executable_path=self.chromedriver, options=self.options)
 
 
