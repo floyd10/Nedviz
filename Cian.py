@@ -1,15 +1,6 @@
-import concurrent
-import multiprocessing
-from queue import Queue
+
 from Driver import Bot
-from multiprocessing import Pool, Manager, Process
-# urls_xpath = '//a[contains(@href,"sale/flat") and text() ="Подробнее"]'
-import os
-from functools import partial
-from concurrent.futures import ProcessPoolExecutor
-import threading
-import random
-from joblib import Parallel, delayed
+
 
 
 class Cian(Bot):

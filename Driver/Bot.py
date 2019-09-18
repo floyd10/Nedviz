@@ -2,10 +2,6 @@ from .Driver import Driver
 from queue import Queue
 import time
 from selenium.common.exceptions import *
-from selenium import webdriver
-import os
-from selenium.common import exceptions
-from concurrent.futures import ProcessPoolExecutor
 import asyncio
 
 
@@ -83,6 +79,7 @@ class Bot(Driver):
             self.start2(link)
             #self.browser.maximize_window()
             time.sleep(1)
+        
 
 
 
